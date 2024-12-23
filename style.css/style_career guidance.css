@@ -1,0 +1,74 @@
+
+body {
+        font-family: 'Roboto', sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f7fc;
+    }
+
+.container {
+        width: 80%;
+        margin: 0 auto;
+        padding-top: 30px;
+            }
+
+header {
+        background-color: #791616;
+        color: white;
+        padding: 15px;
+        text-align: center;
+       }
+
+.card {
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+        padding: 20px;
+      }
+
+.card h2 {
+        color: #4CAF50;
+        margin-bottom: 10px;
+        }
+
+.card p {
+        font-size: 16px;
+        color: #333;
+        }
+
+.card .skills,
+.card .advice,
+.card .training {
+        font-style: italic;
+        color: #555;
+        }
+
+.card .skills {
+        color: #2196F3;
+        }
+
+.card .advice {
+        color: #FF5722;
+        }
+
+.card .training {
+        color: #FF9800;
+        }
+    
+/* ปุ่มลบ delete*/ 
+.btn-danger {
+    padding: 8px 15px;
+    color: white;
+    background-color: #dc3545;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 16px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+}
+ 

@@ -1,0 +1,100 @@
+<?php
+include '../config.php'; // เชื่อมต่อฐานข้อมูล
+
+$sql = "SELECT cs.schedule_id, cs.room, cs.day_of_week, cs.start_time, cs.end_time, 
+                c.course_name, i.instructor_name, cs.faculty, cs.major
+        FROM class_schedule cs
+        LEFT JOIN courses c ON cs.course_id = c.course_id
+        LEFT JOIN instructors i ON cs.instructor_id = i.instructor_id
+        ORDER BY cs.day_of_week, cs.start_time";
+
+$result = $conn->query($sql);
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class Schedule</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-image: url(../images/dai-hoc-phu-xuan-2023-mau-do.jpeg);
+        }
+        h1 {
+            text-align: center;
+            margin: 20px 0;
+            color: #dc3545; /* Bootstrap primary color */
+        }
+        .btn-container {
+            text-align: end;
+            margin-bottom: 15px;
+        }
+        .table-container {
+            max-width: 1000px;
+            margin: 30px auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .table th {
+            text-align: center;
+        }
+        .action-buttons a {
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-4">
+        <div class="table-container">
+        <h1>Class Schedule</h1>
+        <div class="btn-container">
+            <a href="add_schedule.php" class="btn btn-success btn-lg">Add New Schedule</a>
+        </div>
+            <table class="table table-striped table-hover">
+                <thead class="table-warning">
+                    <tr>
+                        <th>Course Name</th>
+                        <th>Instructor Name</th>
+                        <th>Room</th>
+                        <th>Day of the Week</th>
+                        <th>Start Time</th>
+                        <th>End Time</th>
+                        <th>Faculty</th>
+                        <th>Major</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    if ($result->num_rows > 0) {
+                        while ($row = $result->fetch_assoc()) {
+                            echo "<tr>
+                                    <td>" . htmlspecialchars($row['course_name']) . "</td>
+                                    <td>" . htmlspecialchars($row['instructor_name']) . "</td>
+                                    <td>" . htmlspecialchars($row['room']) . "</td>
+                                    <td>" . htmlspecialchars($row['day_of_week']) . "</td>
+                                    <td>" . htmlspecialchars($row['start_time']) . "</td>
+                                    <td>" . htmlspecialchars($row['end_time']) . "</td>
+                                    <td>" . htmlspecialchars($row['faculty']) . "</td>
+                                    <td>" . htmlspecialchars($row['major']) . "</td>
+                                    <td class='action-buttons text-center'>
+                                        <a href='edit_schedule.php?schedule_id=" . $row['schedule_id'] . "' class='btn btn-warning btn-sm'>Edit</a>
+                                        <a href='delete_schedule.php?schedule_id=" . $row['schedule_id'] . "' class='btn btn-danger btn-sm' onclick='return confirm(\"Are you sure you want to delete this schedule?\")'>Delete</a>
+                                    </td>
+                                  </tr>";
+                        }
+                    } else {
+                        echo "<tr><td colspan='9' class='text-center text-muted'>No schedules available</td></tr>";
+                    }
+                    ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.min.js"></script>
+</body>
+</html>

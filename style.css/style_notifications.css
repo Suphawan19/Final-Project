@@ -1,0 +1,45 @@
+body {
+    background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.notification-card {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.notification-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 25px rgba(0, 0, 0, 0.3);
+}
+
+.text-gradient {
+    background: linear-gradient(45deg, #2e2c2a, #e52e71);
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: bold;
+}
+
+.notification-item {
+    border: none;
+    background-color: rgba(245, 245, 245, 0.8);
+    border-radius: 10px;
+    margin-bottom: 10px;
+    transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.notification-item:hover {
+    background-color: rgba(229, 46, 113, 0.1);
+    transform: scale(1.02);
+}
+
+.list-group-item .badge {
+    font-size: 0.85rem;
+    padding: 5px 10px;
+    transition: all 0.3s ease;
+}

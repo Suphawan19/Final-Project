@@ -1,0 +1,462 @@
+/* General reset and font */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
+}
+
+body {
+    position: relative;
+    background-image: url(../images/dai-hoc-phu-xuan-2023-mau-do.jpeg);
+    color: #ffffff; 
+}
+.header{
+    color: #fff;
+    font-size: 30px;
+}
+/* Sidebar */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 250px;
+    background-color: #18070c70;
+    color: #fff;
+    padding: 20px;
+    transition: all 0.3s ease;
+    z-index: 100;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Sidebar Header */
+.sidebar h2 {
+    font-size: 1.8rem;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Sidebar Menu */
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar ul li {
+    margin: 12px 0;
+}
+
+.sidebar ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.1rem;
+    display: block;
+    padding: 10px 20px;
+    border-radius: 8px;
+    transition: background-color 0.3s;
+}
+
+.sidebar ul li a:hover {
+    background-color: #830202;
+}
+
+/* Main Content */
+.main-content {
+    margin-left: 250px;
+    padding: 20px;
+    transition: margin-left 0.3s ease;
+}
+
+/* Hero Banner */
+.hero-banner {
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    height: 450px;
+    max-width: 1500px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    border-radius: 10px;
+    box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.7);
+    transition: background-image 1s ease-in-out;
+    animation: slideImages 30s infinite;
+    padding-left: 20px; /* Smaller padding on smaller screens */
+    margin-left: 250px; /* Smaller margin on smaller screens */
+}
+
+
+/* การแสดงข้อความใน Hero Banner */
+.hero-banner h1 {
+    font-size: 3rem;
+    font-weight: bold;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+    margin-bottom: 20px;
+}
+
+.hero-banner p {
+    font-size: 1.5rem;
+    margin-bottom: 30px;
+    font-weight: 300;
+}
+
+/* ปุ่ม */
+.hero-banner .btn {
+    background-color: #e74c3c;
+    color: white;
+    padding: 12px 30px;
+    font-size: 1.2rem;
+    border-radius: 50px;
+    text-decoration: none;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.hero-banner .btn:hover {
+    background-color: #c0392b;
+    transform: translateY(-5px);
+}
+
+/* การเคลื่อนไหวของภาพพื้นหลัง */
+@keyframes slideImages {
+    0% {
+        background-image: url('../images/banner1.jpg');
+    }
+    33% {
+        background-image: url('../images/banner2.jpg');
+    }
+    66% {
+        background-image: url('../images/background1.gif');
+    }
+    100% {
+        background-image: url('../images/banner3.jpg');
+      
+    }
+}
+
+/* Container */
+.container {
+    width: 80%;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Post Section */
+.post-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.post-author {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #333;
+}
+
+.post-title {
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-top: 10px;
+    color: #303030;
+}
+
+.post-description {
+    font-size: 1em;
+    color: #555;
+    line-height: 1.5;
+    margin-top: 10px;
+}
+
+/* Post Image */
+.post-image img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+/* Post Actions - Like and Comment */
+.post-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+}
+
+/* Like Button */
+.like-btn {
+    background-color: #d71d1d;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+}
+
+.like-btn:hover {
+    background-color: #303030;
+}
+
+/* Comment Button */
+.comment-btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+}
+
+.comment-btn:hover {
+    background-color: #0056b3;
+}
+
+/* Number of Comments */
+p strong {
+    font-weight: bold;
+    font-size: 1.1em;
+    color: #830202;
+}
+
+/* Comments Section */
+.comments-section {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 2px solid #eee;
+}
+
+.comment-form input,
+.comment-form textarea {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.comment-form button {
+    background-color: #ffa800;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+}
+
+.comment-form button:hover {
+    background-color: #830202;
+}
+
+.comment {
+    background-color: #7a869230;
+    padding: 15px;
+    margin-top: 10px;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.comment strong {
+    font-size: 1.1em;
+    color: #333;
+}
+
+.comment p {
+    font-size: 1em;
+    color: #555;
+}
+
+.comment small {
+    display: block;
+    font-size: 0.9em;
+    color: #999;
+    margin-top: 10px;
+}
+
+.comment-count {
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #007bff;
+    margin-left: 5px;
+}
+
+/* Icon Styling */
+.fas {
+    margin-right: 5px;
+}
+/* กำหนดพื้นฐานให้ Weather Container */
+.weather-container {
+    background-color: #11141787; /* สีพื้นหลังอ่อน */
+    border-radius: 10px; /* มุมโค้ง */
+    padding: 20px;
+    max-width: 1000px;
+    margin: 20px auto;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* เงาเบา */
+    text-align: center;
+    font-family: 'Arial', sans-serif;
+}
+
+/* หัวข้อ Weather */
+.weather-container h1 {
+    font-size: 26px;
+    font-weight: bold;
+    color: #ffffff;
+    margin-bottom: 20px;
+}
+
+/* สไตล์ของข้อมูลอุณหภูมิ */
+#temperature {
+    font-size: 22px;
+    color: #ff5733; /* สีที่ดูอบอุ่น */
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+/* สไตล์ของข้อมูล Min/Max Temp */
+#min-max-temp {
+    font-size: 18px;
+    color: #ffffff;
+    margin-bottom: 10px;
+}
+
+/* สไตล์ของข้อมูลความชื้น */
+#humidity {
+    font-size: 18px;
+    color: #007bff;
+    margin-bottom: 10px;
+}
+
+/* สไตล์ของข้อมูลความเร็วลม */
+#wind-speed {
+    font-size: 18px;
+    color: #28a745;
+    margin-bottom: 10px;
+}
+
+/* สไตล์ของคำอธิบายสภาพอากาศ */
+#weather-description {
+    font-size: 18px;
+    color: #ffffff;
+    margin-bottom: 20px;
+}
+
+/* สไตล์ไอคอนสภาพอากาศ */
+#weather-icon img {
+    width: 120px; /* ขนาดของไอคอน */
+    height: auto;
+    margin: 10px 0;
+}
+
+/* การจัดการกับหน้าจอมือถือ */
+@media (max-width: 768px) {
+    .weather-container {
+        padding: 15px;
+        margin-top: 15px;
+    }
+
+    .weather-container h1 {
+        font-size: 22px;
+    }
+
+    #temperature {
+        font-size: 20px;
+    }
+
+    #min-max-temp,
+    #humidity,
+    #wind-speed,
+    #weather-description {
+        font-size: 16px;
+    }
+
+    #weather-icon img {
+        width: 100px; /* ขนาดไอคอนเล็กลงสำหรับมือถือ */
+    }
+}
+
+/* Footer */
+.footer {
+    background-color: #18070cf5;
+    color: #fff;
+    padding: 30px 50px;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.footer-container {
+    display: flex;
+    justify-content: space-between;
+    padding: 30px 20px;
+    max-width: 900px;
+    margin: 0 auto;
+    flex-wrap: wrap;
+}
+
+.footer-section {
+    flex: 1;
+    margin: 0 20px;
+}
+
+.footer-section h4 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+
+.footer-section a {
+    color: #fff;
+    text-decoration: none;
+    margin: 5px 0;
+}
+
+.footer-section a:hover {
+    color: #830202;
+}
+
+/* Footer Bottom */
+.footer-bottom {
+    text-align: center;
+    margin-top: 30px;
+    border-top: 1px solid #34495e;
+    padding: 15px 0;
+}
+
+.footer-bottom p {
+    font-size: 0.9rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 220px;
+    }
+
+    .main-content {
+        margin-left: 220px;
+    }
+
+    .hero-banner h1 {
+        font-size: 2.5rem;
+    }
+
+    .hero-banner p {
+        font-size: 1.2rem;
+    }
+
+    .footer-container {
+        flex-direction: column;
+        align-items: center;
+    }
+}

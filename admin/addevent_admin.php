@@ -23,12 +23,13 @@ function sendEmailNotification($email, $message)
         $mail->Port       = 587;
 
         // ตั้งค่าอีเมล
-        $mail->setFrom('plalook999@gmail.com', 'student');
-        $mail->addAddress($email);
+        $mail->setFrom('suphawan2703@gmail.com', 'student'); // ใส่อีเมลที่ส่งออกจริง ๆ
+        $mail->addAddress($email); // เพิ่มอีเมลปลายทาง
         $mail->isHTML(true);
         $mail->Subject = "New Event Notification";
         $mail->Body    = $message;
 
+        // ส่งอีเมล
         $mail->send();
         return true; // ส่งอีเมลสำเร็จ
     } catch (Exception $e) {
@@ -70,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // ดึงอีเมลผู้ใช้ที่ตรงกับ faculty, major และ role = 'Student'
         $sql_users = "SELECT email FROM users 
-                      WHERE role = 'Student' 
+                      WHERE role = 'student' 
                       AND faculty = ? 
                       AND major = ?";
         $stmt_users = $conn->prepare($sql_users);
@@ -102,6 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 ?>
 
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -111,29 +113,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title>Add Event</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-image: url(../images/dai-hoc-phu-xuan-2023-mau-do.jpeg);
-        }
-
-        .form-container {
-            background: #ffffff;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            margin: 30px auto;
-            max-width: 700px;
-        }
-
-        .header-title {
-            font-size: 1.8rem;
-            font-weight: bold;
-            text-align: center;
-            color: #007bff;
-            margin-bottom: 20px;
-        }
-    </style>
+    <link href="../style.css/style_addevent_admin.css" rel="stylesheet">
 </head>
 
 <body>
@@ -190,9 +170,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </select>
                         <select class="form-select me-2" name="start_month" required>
                             <option value="">Month</option>
-                            <?php 
+                            <?php
                             $months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-                            foreach ($months as $index => $month) echo "<option value='".($index+1)."'>$month</option>";
+                            foreach ($months as $index => $month) echo "<option value='" . ($index + 1) . "'>$month</option>";
                             ?>
                         </select>
                         <select class="form-select" name="start_year" required>
@@ -212,8 +192,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </select>
                         <select class="form-select me-2" name="end_month" required>
                             <option value="">Month</option>
-                            <?php 
-                            foreach ($months as $index => $month) echo "<option value='".($index+1)."'>$month</option>";
+                            <?php
+                            foreach ($months as $index => $month) echo "<option value='" . ($index + 1) . "'>$month</option>";
                             ?>
                         </select>
                         <select class="form-select" name="end_year" required>
@@ -242,6 +222,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <select class="form-select" id="faculty" name="faculty" required>
                         <option value="">Select Faculty</option>
                         <option value="Faculty of Technology-Business">Faculty of Technology-Business</option>
+                        <option value="Faculty of Foreign Languages-Tourism">Faculty of Foreign Languages-Tourism</option>
                     </select>
                 </div>
 
@@ -250,6 +231,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <select class="form-select" id="major" name="major" required>
                         <option value="">Select Major</option>
                         <option value="Information Technology">Information Technology</option>
+                        <option value="Automotive Engineering Technology">Automotive Engineering Technology</option>
+                        <option value="Business Administration-Marketing">Business Administration-Marketing</option>
+                        ------------------------------------------------------------------------------------------------
+                        <option value="Faculty of Foreign Languages-Tourism">Faculty of Foreign Languages-Tourism</option>
+                        <option value="Travel and Tourism Service Management">Travel and Tourism Service Management</option>
+                        <option value="English language">English language</option>
+                        <option value="Chinese language">Chinese language</option>
                     </select>
                 </div>
 

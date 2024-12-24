@@ -17,34 +17,7 @@ $result = $conn->query($sql);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Class Schedule</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            background-image: url(../images/dai-hoc-phu-xuan-2023-mau-do.jpeg);
-        }
-        h1 {
-            text-align: center;
-            margin: 20px 0;
-            color: #dc3545; /* Bootstrap primary color */
-        }
-        .btn-container {
-            text-align: end;
-            margin-bottom: 15px;
-        }
-        .table-container {
-            max-width: 1000px;
-            margin: 30px auto;
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        .table th {
-            text-align: center;
-        }
-        .action-buttons a {
-            margin-right: 5px;
-        }
-    </style>
+    <link href="../style.css/style_class_schedule.css" rel="stylesheet">
 </head>
 <body>
     <div class="container py-4">

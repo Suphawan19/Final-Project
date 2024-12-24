@@ -33,77 +33,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../style.css/style_career guidance.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../style.css/style_add_career.css" rel="stylesheet">
 </head>
 <body>
-    <style>
-        /* การตั้งค่าทั่วไป */
-body {
-    font-family: 'Roboto', sans-serif;
-    background-color: #f4f4f9;
-    color: #333;
-    margin: 0;
-    padding: 0;
-}
 
-/* ส่วนหัว */
-header {
-    background-color: #7b2b2b;
-    color: white;
-    padding: 20px 0;
-    text-align: center;
-}
-
-header h1 {
-    font-size: 36px;
-    margin: 0;
-}
-
-/* กรอบฟอร์ม */
-.container {
-    width: 60%;
-    margin: 20px auto;
-    padding: 30px;
-    background-color: #fff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-}
-
-/* สไตล์ฟอร์ม */
-.form-group {
-    margin-bottom: 20px;
-}
-
-label {
-    display: block;
-    font-size: 18px;
-    margin-bottom: 5px;
-    color: #333;
-}
-
-input[type="text"], textarea {
-    width: 100%;
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-}
-
-textarea {
-    height: 120px;
-}
-
-button {
-    background-color: #28a745;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    font-size: 18px;
-    cursor: pointer;
-}
-
-    </style>
     <header>
         <h1>Add Career Advice</h1>
     </header>

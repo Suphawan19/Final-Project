@@ -33,93 +33,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Student</title>
+    <link href="../style.css/style_add_student.css" rel="stylesheet">
 </head>
 <body>
-    <style>
-        /* ตกแต่งพื้นหลังและฟอนต์ */
-body {
-    font-family: 'Arial', sans-serif;
-    background-image: url(../images/dai-hoc-phu-xuan-2023-mau-do.jpeg);
-    margin: 0;
-    padding: 0;
-}
 
-/* กล่องฟอร์ม */
-form {
-    width: 80%;
-    max-width: 600px;
-    margin: 50px auto;
-    background-color: #ffffff;
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-/* หัวข้อฟอร์ม */
-h1 {
-    text-align: center;
-    font-size: 2em;
-    margin-bottom: 30px;
-    color: #333;
-}
-
-/* ป้ายของ input */
-label {
-    font-size: 1em;
-    font-weight: bold;
-    color: #333;
-    margin-bottom: 5px;
-    display: block;
-}
-
-/* ช่องกรอกข้อมูล */
-input, select {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 1em;
-}
-
-/* ช่องกรอกข้อมูลเมื่อมีกระทำผิด */
-input:invalid, select:invalid {
-    border-color: gainsboro;
-}
-
-/* ปุ่มส่งข้อมูล */
-button {
-    width: 100%;
-    padding: 12px;
-    font-size: 1.2em;
-    background-color:rgb(204, 48, 31);
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-button:hover {
-    background-color:rgb(148, 27, 27);
-}
-
-/* ปรับการแสดงผลให้สวยงาม */
-input, select, button {
-    font-size: 1.1em;
-}
-
-/* เพิ่มระยะห่างและจัดการปัญหาบรรทัด */
-br {
-    display: block;
-    margin-bottom: 10px;
-}
-select {
-    position: relative;
-    z-index: 1;
-}
-
-    </style>
 
     <form method="POST">
         <h1>Add New Student</h1>

@@ -40,50 +40,7 @@ $result = $conn->query($sql);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Exam Schedule</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            background-image: url(../images/dai-hoc-phu-xuan-2023-mau-do.jpeg);
-        }
-        h1 {
-            text-align: center;
-            margin: 20px 0;
-            color: #dc3545; /* Bootstrap danger color */
-        }
-        .btn-add {
-            background-color: #28a745; /* Bootstrap success color */
-            color: white;
-        }
-        .btn-add:hover {
-            background-color: #218838;
-        }
-        .btn-edit {
-            background-color: #ffc107; /* Bootstrap warning color */
-            color: black;
-        }
-        .btn-edit:hover {
-            background-color: #e0a800;
-        }
-        .btn-delete {
-            background-color: #dc3545; /* Bootstrap danger color */
-            color: white;
-        }
-        .btn-delete:hover {
-            background-color: #c82333;
-        }
-        .table-container {
-            max-width: 1000px;
-            margin: 30px auto;
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        .no-data {
-            text-align: center;
-            color: #6c757d; /* Bootstrap secondary color */
-            font-style: italic;
-        }
-    </style>
+    <link href="../style.css/style_exam_schedule.css" rel="stylesheet">
 </head>
 
 <body>

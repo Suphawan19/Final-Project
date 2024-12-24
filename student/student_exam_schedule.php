@@ -13,6 +13,8 @@ if ($conn->connect_error) {
 }
 
 // ดึงข้อมูลจากตาราง Exams
+$search = isset($_GET['search']) ? $_GET['search'] : ''; // Get the search term
+
 $sql = "SELECT 
             e.exam_id,
             e.exam_date,
@@ -27,10 +29,24 @@ $sql = "SELECT
         JOIN 
             Courses c ON e.course_id = c.course_id
         LEFT JOIN 
-            Instructors i ON e.instructor_id = i.instructor_id
-        ORDER BY 
-            e.exam_date, e.start_time";
-$result = $conn->query($sql);
+            Instructors i ON e.instructor_id = i.instructor_id";
+
+if ($search) {
+    $sql .= " WHERE e.exam_id LIKE ? OR c.course_name LIKE ? OR e.room LIKE ? OR i.instructor_name LIKE ?";
+}
+
+$sql .= " ORDER BY e.exam_date, e.start_time";
+
+// Prepare the statement
+$stmt = $conn->prepare($sql);
+
+if ($search) {
+    $searchTerm = "%" . $search . "%";
+    $stmt->bind_param('ssss', $searchTerm, $searchTerm, $searchTerm, $searchTerm);
+}
+
+$stmt->execute();
+$result = $stmt->get_result();
 ?>
 
 <!DOCTYPE html>
@@ -40,6 +56,8 @@ $result = $conn->query($sql);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Exam Schedule</title>
+    <!-- Font Awesome for search icon -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
         body {
             font-family: 'Roboto', sans-serif;
@@ -100,6 +118,40 @@ $result = $conn->query($sql);
             font-size: 1.2em;
             color: #888;
         }
+
+        /* Search box styling */
+        .search-form {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+        }
+
+        .search-form input {
+            padding: 10px;
+            font-size: 1em;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            width: 200px;
+        }
+
+        .search-form button {
+            padding: 10px;
+            margin-left: 10px;
+            background-color: rgb(54, 121, 255);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .search-form button:hover {
+            background-color: rgb(4, 189, 225);
+        }
+
+        .search-form .fa-search {
+            font-size: 1.5em;
+            color: #ffffff;
+        }
     </style>
 </head>
 
@@ -109,8 +161,13 @@ $result = $conn->query($sql);
     </header>
 
     <div class="container">
-        <!-- The button to add exams should not be shown to students, so remove it for student view -->
-        <!-- <a href="add_exam.php" class="btn">Add Exam</a> -->
+        <!-- Search Form -->
+        <form action="" method="get" class="search-form">
+            <input type="text" name="search" placeholder="Search exams..." value="<?php echo htmlspecialchars($search); ?>">
+            <button type="submit">
+                <i class="fa fa-search"></i>
+            </button>
+        </form>
 
         <table>
             <thead>

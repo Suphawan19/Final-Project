@@ -1,9 +1,25 @@
 <?php
 include '../config.php';
 
-// Query to fetch data from the students table
-$sql = "SELECT * FROM students ORDER BY created_at DESC";
-$result = $conn->query($sql);
+// Search functionality
+$search = isset($_GET['search']) ? $_GET['search'] : '';
+
+// Query to fetch data with optional search
+$sql = "SELECT * FROM students";
+if (!empty($search)) {
+    // Apply search filter
+    $sql .= " WHERE first_name LIKE ? OR last_name LIKE ?";
+    $stmt = $conn->prepare($sql);
+    $search_param = '%' . $search . '%';
+    $stmt->bind_param("ss", $search_param, $search_param);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $stmt->close();
+} else {
+    // Apply ordering by student_id in ascending order
+    $sql .= " ORDER BY student_id ASC";
+    $result = $conn->query($sql);
+}
 ?>
 
 <!DOCTYPE html>
@@ -13,73 +29,8 @@ $result = $conn->query($sql);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Information</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-    <style>
-        /* Custom CSS for the student information page */
-        body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #f4f4f9;
-            margin: 0;
-            padding: 0;
-        }
-
-        header {
-            background-color: #eec51d;
-            color: white;
-            padding: 20px;
-            text-align: center;
-        }
-
-        h1 {
-            font-size: 2em;
-        }
-
-        .student-container {
-            max-width: 1200px;
-            margin: 20px auto;
-            padding: 20px;
-            background-color: #ffffff;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        th, td {
-            padding: 12px 15px;
-            text-align: left;
-            border: 1px solid #ddd;
-        }
-
-        th {
-            background-color: #8d2a2a;
-            color: white;
-        }
-
-        td {
-            background-color: #f9f9f9;
-        }
-
-        .actions {
-            display: flex;
-            gap: 10px;
-        }
-
-        .no-exams {
-            text-align: center;
-            font-size: 1.2em;
-            color: #888;
-        }
-
-        /* Hide buttons for editing and deleting */
-        .btn {
-            display: none; /* Hide edit and delete buttons */
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="../style.css/style_student_information.css" rel="stylesheet">
 </head>
 <body>
 
@@ -88,6 +39,15 @@ $result = $conn->query($sql);
 </header>
 
 <div class="student-container">
+    <!-- Search Form -->
+    <div class="search-bar">
+        <form method="GET" action="">
+            <input type="text" name="search" placeholder="Search by name..." value="<?php echo htmlspecialchars($search); ?>">
+            <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i> Search</button>
+        </form>
+    </div>
+
+    <!-- Students Table -->
     <?php if ($result->num_rows > 0): ?>
         <table>
             <thead>
@@ -101,6 +61,7 @@ $result = $conn->query($sql);
                     <th>Gender</th>
                     <th>Faculty</th>
                     <th>Major</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -115,12 +76,17 @@ $result = $conn->query($sql);
                         <td><?php echo htmlspecialchars($row['gender']); ?></td>
                         <td><?php echo htmlspecialchars($row['faculty']); ?></td>
                         <td><?php echo htmlspecialchars($row['major']); ?></td>
+                        <td class="actions">
+                            <a href="student_detail.php?student_id=<?php echo urlencode($row['student_id']); ?>" class="btn btn-warning">
+                                <i class="fas fa-eye"></i> View
+                            </a>
+                        </td>
                     </tr>
                 <?php endwhile; ?>
             </tbody>
         </table>
     <?php else: ?>
-        <p class="no-exams">No students found</p>
+        <p class="no-students">No students found</p>
     <?php endif; ?>
 </div>
 

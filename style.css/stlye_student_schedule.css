@@ -1,0 +1,98 @@
+        /* Custom CSS for the class schedule page */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #eec51d;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2em;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #8d2a2a;
+            color: white;
+        }
+
+        td {
+            background-color: #f9f9f9;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .no-exams {
+            text-align: center;
+            font-size: 1.2em;
+            color: #888;
+        }
+
+        /* Ensure consistent alignment for table headers and cells */
+        table th, table td {
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        /* Search box styling */
+        .search-form {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+        }
+
+        .search-form input {
+            padding: 10px;
+            font-size: 1em;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            width: 200px;
+        }
+
+        .search-form button {
+            padding: 10px;
+            margin-left: 10px;
+            background-color:rgb(54, 121, 255);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .search-form button:hover {
+            background-color:rgb(4, 189, 225);
+        }
+        .search-form .fa-search {
+            font-size: 1.5em;
+            color: #ffffff;
+        }

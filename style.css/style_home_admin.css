@@ -427,6 +427,7 @@ header {
     padding: 30px 50px;
     box-sizing: border-box;
     text-align: center;
+    
 }
 
 .footer-container {
@@ -441,6 +442,12 @@ header {
 .footer-section {
     flex: 1;
     margin: 0 20px;
+}
+/* Remove bullet points in footer lists */
+.footer-section ul {
+    list-style: none; /* ลบ bullet points */
+    padding: 0;
+    margin: 0;
 }
 
 .footer-section h4 {

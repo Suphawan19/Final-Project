@@ -54,6 +54,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <li class="nav-item"><a class="nav-link" href="event_display.php"><i class="fas fa-calendar-alt"></i> Event Display</a></li>
                     <li class="nav-item"><a class="nav-link" href="../admin/user_management.php"><i class="fas fa-users"></i> User Management</a></li>
                     <li class="nav-item"><a class="nav-link" href="../PHPMailer/src/send_notification.php"><i class="fas fa-bell"></i> Notifications</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../admin/courses.php"><i class="fas fa-graduation-cap""></i> courses</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../admin/instructors.php"><i class="fas fa-chalkboard-teacher"></i> instructors</a></li>
                     <li class="menu-item dropdown">
                         <a href="#" id="dropdown-toggle" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-info-circle"></i> About Us</a>
                         <ul class="dropdown-menu">

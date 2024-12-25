@@ -28,6 +28,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $position = $_POST['position'] ?? null;
     $dob = $_POST['dob'] ?? null;
     $age = $_POST['age'] ?? null;
+    $year = ($role === 'student') ? ($_POST['year'] ?? null) : null; // เฉพาะนักศึกษาเท่านั้นที่มีชั้นปี
     $password = $_POST['password'] ?? null;
     $hashed_password = password_hash($password, PASSWORD_DEFAULT); // เข้ารหัสเพียงครั้งเดียว
 
@@ -43,11 +44,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $message = "Error: user_id '$user_id' already exists.";
     } else {
         // ถ้าไม่มี user_id นี้ในฐานข้อมูล, ทำการแทรกข้อมูล
-        $sql = "INSERT INTO users (role, user_id, first_name, last_name, email, faculty, major, position, dob, age, password)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO users (role, user_id, first_name, last_name, email, faculty, major, position, dob, age, password, year)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param(
-            "sssssssssss",
+            "ssssssssssss",
             $role,
             $user_id,
             $first_name,
@@ -58,7 +59,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $position,
             $dob,
             $age,
-            $hashed_password
+            $hashed_password,
+            $year
         );
 
         if ($stmt->execute()) {
@@ -68,16 +70,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
         $stmt->close();
     }
-} else {
-    $message = "Please fill in all required fields.";
 }
-
-echo $message;
 ?>
-
-
-<!DOCTYPE html>
-<html lang="en">
 
 <!DOCTYPE html>
 <html lang="en">
@@ -88,6 +82,7 @@ echo $message;
     <title>User Management</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <link rel="stylesheet" href="../style.css/style_user_management.css">
 
@@ -109,16 +104,32 @@ echo $message;
             }
         }
 
+        function setRole(selectedRole) {
+            document.getElementById('role').value = selectedRole;
+            const options = document.querySelectorAll('.role-option');
+            options.forEach(option => option.classList.remove('active'));
+
+            if (selectedRole === 'student') {
+                options[0].classList.add('active');
+            } else if (selectedRole === 'staff') {
+                options[1].classList.add('active');
+            }
+            toggleFields();
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             toggleFields();
+            flatpickr("#dob", {
+                dateFormat: "Y-m-d",
+                altInput: true,
+                altFormat: "F j, Y",
+                locale: "en"
+            });
         });
     </script>
-
-   
 </head>
 
 <body>
-
     <div class="container py-5">
         <div class="card mx-auto shadow-lg" style="max-width: 700px;">
             <div class="card-body">
@@ -140,37 +151,11 @@ echo $message;
                             <div class="role-option text-center" onclick="setRole('staff')">
                                 <i class="fa fa-user-tie role-icon" aria-hidden="true"></i>
                                 <p>Staff</p>
-
-                                <script>
-                                    function setRole(selectedRole) {
-                                        // Set hidden input value
-                                        document.getElementById('role').value = selectedRole;
-
-                                        // Highlight selected role
-                                        const options = document.querySelectorAll('.role-option');
-                                        options.forEach(option => option.classList.remove('active'));
-
-                                        if (selectedRole === 'student') {
-                                            options[0].classList.add('active');
-                                        } else if (selectedRole === 'staff') {
-                                            options[1].classList.add('active');
-                                        }
-
-                                        // Toggle fields based on role
-                                        toggleFields();
-                                    }
-
-                                    document.addEventListener('DOMContentLoaded', () => {
-                                        // Set default role on load if needed
-                                        toggleFields();
-                                    });
-                                </script>
                             </div>
                         </div>
-
-                        <!-- Hidden input to store the role -->
                         <input type="hidden" name="role" id="role" required>
                     </div>
+
                     <div class="mb-3">
                         <label for="user_id" class="form-label">User ID:</label>
                         <input type="text" name="user_id" id="user_id" class="form-control" required>
@@ -203,12 +188,11 @@ echo $message;
                             <option value="" disabled selected>Select Major</option>
                             <option value="Information Technology">Information Technology</option>
                             <option value="Automotive Engineering Technology">Automotive Engineering Technology</option>
-                            <option value="Business Administration-Marketing">Business Administration-Marketing</option>
-
-                            <option value="Travel and Tourism Service Management">Travel and Tourism Service Management</option>
-                            <option value="English language">English language</option>
-                            <option value="Chinese language">Chinese language</option>
                         </select>
+                    </div>
+                    <div class="student-field mb-3" style="display: none;">
+                        <label for="year" class="form-label">Year:</label>
+                        <input type="number" name="year" id="year" class="form-control">
                     </div>
 
                     <!-- Staff Fields -->
@@ -221,17 +205,6 @@ echo $message;
                         <label for="dob" class="form-label">Date of Birth:</label>
                         <input type="text" name="dob" id="dob" class="form-control">
                     </div>
-
-                    <script>
-                        document.addEventListener('DOMContentLoaded', () => {
-                            flatpickr("#dob", {
-                                dateFormat: "Y-m-d", // รูปแบบวันที่ (YYYY-MM-DD)
-                                altInput: true, // แสดงวันที่ในฟอร์แมตที่อ่านง่าย
-                                altFormat: "F j, Y", // ตัวอย่าง: January 1, 2023
-                                locale: "en", // บังคับภาษาอังกฤษ
-                            });
-                        });
-                    </script>
                     <div class="mb-3">
                         <label for="age" class="form-label">Age:</label>
                         <input type="number" name="age" id="age" class="form-control">
@@ -244,8 +217,76 @@ echo $message;
                 </form>
             </div>
         </div>
+        
+        <!-- Displaying the User List -->
+        <div class="card mt-5">
+            <div class="card-body">
+                <h2 class="text-center">User List</h2>
+                <div class="mb-3">
+                    <input type="text" id="search" class="form-control" placeholder="Search Users..." onkeyup="searchUsers()">
+                </div>
+
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            
+                            <th>User ID</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Age</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="user-table-body">
+                        <?php
+                        // Fetch all users from the database
+                        $result = $conn->query("SELECT * FROM users");
+                        while ($row = $result->fetch_assoc()) {
+                            echo "<tr>
+                                  
+                                    </td>
+                                    <td>{$row['user_id']}</td>
+                                    <td>{$row['first_name']}</td>
+                                    <td>{$row['last_name']}</td>
+                                    <td>{$row['email']}</td>
+                                    <td>{$row['role']}</td>
+                                    <td>{$row['age']}</td>
+                                      <td>
+                                         <a href='edit_user.php?id={$row['user_id']}' class='btn btn-warning btn-sm'>
+                            <i class='fa fa-edit'></i> Edit
+                        </a>
+                        <a href='delete_user.php?id={$row['user_id']}' class='btn btn-danger btn-sm' onclick=\"return confirm('Are you sure you want to delete this user?');\">
+                            <i class='fa fa-trash'></i> Delete
+                        </a>
+                                </tr>";
+                        }
+                        ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <script>
+        function searchUsers() {
+            const searchQuery = document.getElementById('search').value.toLowerCase();
+            const rows = document.querySelectorAll('#user-table-body tr');
+
+            rows.forEach(row => {
+                const cells = row.getElementsByTagName('td');
+                const userData = Array.from(cells).slice(1).map(cell => cell.textContent.toLowerCase());
+                const isMatch = userData.some(data => data.includes(searchQuery));
+
+                if (isMatch) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+    </script>
 </body>
 
 </html>

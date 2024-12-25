@@ -56,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <style>
         body {
-            background: linear-gradient(45deg, #2d3e50, #1e272e);
+            background: linear-gradient(45deg,rgb(65, 63, 67),rgba(105, 22, 22, 0.83));
             font-family: Arial, sans-serif;
         }
 

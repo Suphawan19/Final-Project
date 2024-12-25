@@ -242,8 +242,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
 
                 <div class="text-center">
-                    <button type="submit" class="btn btn-primary">Add Event</button>
-                </div>
+    <button type="button" class="btn btn-danger" onclick="window.location.href='event_display.php';">Go to Event Display</button>
+</div>
+
             </form>
         </div>
     </div>

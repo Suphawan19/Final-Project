@@ -144,11 +144,11 @@ $conn->close();
                 <tr><th>Major</th><td><?php echo htmlspecialchars($student['major']); ?></td></tr>
             </table>
             
-            <a href="index.php" class="btn-back">← Back to List</a>
+            <a href="../student/student_information.php" class="btn-back">← Back to List</a>
         </div>
     <?php else: ?>
         <p>Student not found.</p>
-        <a href="index.php" class="btn-back">← Back to List</a>
+        <a href="../student/student_information.php" class="btn-back">← Back to List</a>
     <?php endif; ?>
 </div>
 

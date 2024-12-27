@@ -1,30 +1,34 @@
 <?php
-// เชื่อมต่อกับฐานข้อมูล
 include('../config.php');
 
-
+// การเพิ่มข้อมูลเหตุการณ์
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['title'], $_POST['event_type'], $_POST['month'], $_POST['Set_event_date'], $_POST['end_date'], $_POST['time'])) {
+    if (isset($_POST['title'], $_POST['event_type'], $_POST['month'], $_POST['set_event_date'], $_POST['end_date'], $_POST['time'], $_POST['end_time'], $_POST['description'])) {
         $title = $_POST['title'];
         $event_type = $_POST['event_type'];
         $month = $_POST['month'];
-        $Set_event_date = $_POST['Set_event_date'];
+        $set_event_date = $_POST['set_event_date'];
         $end_date = $_POST['end_date'];
         $time = $_POST['time'];
         $end_time = $_POST['end_time']; // Retrieve the end time
+        $description = $_POST['description']; // Retrieve the description
 
-        // SQL insert statement
-        $sql = "INSERT INTO events (title, event_type, month, Set_event_date, end_date, event_time, end_time) 
-        VALUES ('$title', '$event_type', '$month', '$Set_event_date', '$end_date', '$time', '$end_time')";
+        // ใช้ prepared statement เพื่อป้องกัน SQL injection
+        $stmt = $conn->prepare("INSERT INTO events (title, event_type, month, Set_event_date, end_date, event_time, end_time, description) 
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("ssssssss", $title, $event_type, $month, $set_event_date, $end_date, $time, $end_time, $description);
 
-        if ($conn->query($sql)) {
+        if ($stmt->execute()) {
             echo "🎉 Event added successfully!";
         } else {
-            echo "❌ Error: " . $conn->error;
+            echo "❌ Error: " . $stmt->error;
         }
+
+        $stmt->close();
     }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="th">
 
@@ -36,7 +40,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="../style.css/style_home_admin.css">
-
 </head>
 <body>
     
@@ -54,15 +57,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <li class="nav-item"><a class="nav-link" href="event_display.php"><i class="fas fa-calendar-alt"></i> Event Display</a></li>
                     <li class="nav-item"><a class="nav-link" href="../admin/user_management.php"><i class="fas fa-users"></i> User Management</a></li>
                     <li class="nav-item"><a class="nav-link" href="../admin/send_notification.php"><i class="fas fa-bell"></i> Notifications</a></li>
-                    <li class="nav-item"><a class="nav-link" href="../admin/courses.php"><i class="fas fa-graduation-cap""></i> courses</a></li>
-                    <li class="nav-item"><a class="nav-link" href="../admin/instructors.php"><i class="fas fa-chalkboard-teacher"></i> instructors</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../admin/courses.php"><i class="fas fa-graduation-cap""></i> Courses</a></li>
+                    <li class="nav-item"><a class="nav-link" href="../admin/instructors.php"><i class="fas fa-chalkboard-teacher"></i> Instructors</a></li>
                     <li class="menu-item dropdown">
                         <a href="#" id="dropdown-toggle" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-info-circle"></i> About Us</a>
                         <ul class="dropdown-menu">
                             <li><a href="../admin/admin_student.php"><i class="fas fa-user-graduate"></i> Student Information</a></li>
+                            <li><a href="../admin/admin_staff.php"><i class="fas fa-user-graduate"></i> Staff Information</a></li>
                             <li><a href="../admin/class_schedule.php"><i class="fas fa-calendar-alt"></i> Class Schedule</a></li>
                             <li><a href="../admin/exam_schedule.php"><i class="fas fa-calendar-alt"></i> Examination Schedule</a></li>
-                            <li><a href="../admin/career guidance.php"><i class="fas fa-chalkboard-teacher"></i> Career Guidance Training</a></li>
                         </ul>
                     </li>
                     <li class="nav-item"><a class="nav-link" href="../logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
@@ -71,7 +74,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </nav>
 </header>
-
 
     <!-- Hero Banner -->
     <section class="hero-banner">
@@ -92,10 +94,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $id = $row['id'];
                         $title = htmlspecialchars($row['title']);
                         $event_type = htmlspecialchars($row['event_type']);
-                        $Set_event_date = htmlspecialchars($row['Set_event_date']);
+                        $set_event_date = htmlspecialchars($row['set_event_date']);
                         $end_date = htmlspecialchars($row['end_date']);
                         $event_time = htmlspecialchars($row['event_time']);
                         $end_time = htmlspecialchars($row['end_time']);
+                        $description = htmlspecialchars($row['description']);  // Get the description
 
                         echo "
                         <div class='col-lg-4 col-md-6 col-sm-12'>
@@ -103,9 +106,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <div class='card-body'>
                                     <h5 class='card-title'>$title</h5>
                                     <p class='card-text'><strong>Type:</strong> $event_type</p>
-                                    <p class='card-text'><strong>Start:</strong> $Set_event_date</p>
-                                    <button class='btn btn-details' onclick='showEventDetails(\"$title\", \"$event_type\", \"$Set_event_date\", \"$end_date\", \"$event_time\", \"$end_time\")'>
-                                         View Details
+                                    <p class='card-text'><strong>Start:</strong> $set_event_date</p>
+                                    <p class='card-text'><strong>Description:</strong> $description</p> <!-- Display description -->
+                                    <button class='btn btn-details' onclick='showEventDetails(\"$title\", \"$event_type\", \"$set_event_date\", \"$end_date\", \"$event_time\", \"$end_time\", \"$description\")'>
+                                        View Details
                                     </button>
                                 </div>
                             </div>
@@ -129,6 +133,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
                 <div class="modal-body">
                     <p><strong>Type:</strong> <span id="event-type"></span></p>
+                    <p><strong>Description:</strong> <span id="event-description"></span></p> 
                     <p><strong>Start Date:</strong> <span id="event-Set_event_date"></span></p>
                     <p><strong>End Date:</strong> <span id="event-end"></span></p>
                     <p><strong>Start Time:</strong> <span id="event-time"></span></p>
@@ -140,14 +145,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- JavaScript for Weather API -->
-    
 
     <!-- JavaScript for Event Modal -->
     <script>
-        function showEventDetails(title, eventType, SetEventDate, endDate, eventTime, endTime) {
+        function showEventDetails(title, eventType, SetEventDate, endDate, eventTime, endTime, description) {
             document.getElementById('event-title').textContent = title;
             document.getElementById('event-type').textContent = eventType;
+            document.getElementById('event-description').textContent = description; // Display description
             document.getElementById('event-Set_event_date').textContent = SetEventDate;
             document.getElementById('event-end').textContent = endDate;
             document.getElementById('event-time').textContent = eventTime;
@@ -219,55 +223,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // ตั้งค่าการรีเฟรชข้อมูลทุก 10 นาที (600,000 ms)
     setInterval(fetchWeatherData, 600000); 
 </script>
-        <!-- Footer Section -->
-        <footer class="footer">
-
-<!-- Footer Content -->
-<div class="footer-container">
-    <!-- Left Section -->
-    <div class="footer-section about">
-        <img src="../images/logo pxu.jpeg" alt="Logo">
-        
-        <p>Phú Xuân University, located in Hue, Vietnam, is one of the most renowned higher education institutions in central Vietnam. It was established to provide quality education and promote research relevant to the development of local and national communities.</p>
-        
-    </div>
-
-    <!-- Quick Links -->
-    <div class="footer-section links">
-        <h4>Quick Links</h4>
-        <ul>
-            <li><a href="../admin/admin_student.php">student infomation</a></li>
-            <li><a href="../admin/class_schedule.php">schedule infomation</a></li>
-            <li><a href="../admin/exam_schedule.php">exam infomation schedule</a></li>
-            <li><a href="../admin/user_management.php">user management</a></li>
-        </ul>
-    </div>
-
-    <!-- Useful Links -->
-    <div class="footer-section links">
-        <h4>Useful Links</h4>
-        <ul>
-            <li><a href="../admin/event_display.php">event display</a></li>
-            <li><a href="../admin/career guidance.php">career guidance training</a></li>
-            
-        </ul>
-    </div>
-
-    <!-- School Hours -->
-    <div class="footer-section hours">
-        <h4>School Hours</h4>
-        <p>7:00 AM - 4:30 PM ,  - Monday</p>
-        <p>Phu Xuan University,<br>
-        Phu Xuan University - 176 Tran Phu,Tp.Huế, Thừa Thiên Huế,<br>
-        49000, Vietnam</p>
-    </div>
-</div>
-
-<!-- Footer Bottom -->
-<div class="footer-bottom">
-    <p>Copyright © 2024 Phu Xuan University. All rights reserved.</p>
-</div>
-</footer>
+    <!-- Footer Section -->
+    <footer class="footer">
+        <!-- Footer Content -->
+        <div class="footer-container">
+            <div class="footer-section about">
+                <img src="../images/logo pxu.jpeg" alt="Logo">
+                <p>Phú Xuân University, located in Hue, Vietnam, is one of the most renowned higher education institutions in central Vietnam.</p>
+            </div>
+            <div class="footer-section links">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="../admin/admin_student.php">Student Information</a></li>
+                    <li><a href="../admin/class_schedule.php">Class Schedule</a></li>
+                    <li><a href="../admin/exam_schedule.php">Exam Schedule</a></li>
+                    <li><a href="../admin/user_management.php">User Management</a></li>
+                </ul>
+            </div>
+            <div class="footer-section hours">
+                <h4>School Hours</h4>
+                <p>7:00 AM - 4:30 PM, Monday to Friday</p>
+                <p>Phu Xuan University, 176 Tran Phu, Tp.Huế, Vietnam</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>Copyright © 2024 Phu Xuan University. All rights reserved.</p>
+        </div>
+    </footer>
 </body>
-
 </html>

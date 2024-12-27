@@ -1,56 +1,50 @@
 <?php
-include '../config.php'; // เชื่อมต่อฐานข้อมูล
+include '../config.php';
 
-// ตรวจสอบว่าได้ส่ง id ผ่าน URL หรือไม่
+// ตรวจสอบว่ามี schedule_id หรือไม่
 if (isset($_GET['schedule_id'])) {
-    $schedule_id = $_GET['schedule_id'];
+    $schedule_id = intval($_GET['schedule_id']);
 
-    // ดึงข้อมูลจากฐานข้อมูลที่มี id ตรงกับที่ส่งมา
-    $sql = "SELECT cs.schedule_id, cs.room, cs.day_of_week, cs.start_time, cs.end_time, 
-                   c.course_name, i.instructor_name, cs.faculty, cs.major
-            FROM class_schedule cs
-            LEFT JOIN courses c ON cs.course_id = c.course_id
-            LEFT JOIN instructors i ON cs.instructor_id = i.instructor_id
-            WHERE cs.schedule_id = '$schedule_id'";
-
+    // ดึงข้อมูลเดิมจากฐานข้อมูล
+    $sql = "SELECT * FROM class_schedule WHERE schedule_id = $schedule_id";
     $result = $conn->query($sql);
 
     if ($result->num_rows > 0) {
-        $row = $result->fetch_assoc();
+        $schedule = $result->fetch_assoc();
     } else {
         echo "Schedule not found.";
         exit();
     }
 } else {
-    echo "Invalid ID.";
+    echo "Invalid request.";
     exit();
 }
 
-// ตรวจสอบการส่งฟอร์ม
+// เมื่อผู้ใช้กดปุ่มบันทึกการแก้ไข
 if (isset($_POST['submit'])) {
-    $course_name = $_POST['course_name'];
-    $instructor_name = $_POST['instructor_name'];
-    $room = $_POST['room'];
-    $day_of_week = $_POST['day_of_week'];
-    $start_time = $_POST['start_time'];
-    $end_time = $_POST['end_time'];
-    $faculty = $_POST['faculty'];
-    $major = $_POST['major'];
+    $course_id = $conn->real_escape_string($_POST['course_name']);
+    $instructor_id = $conn->real_escape_string($_POST['instructor_name']);
+    $room = $conn->real_escape_string($_POST['room']);
+    $day_of_week = $conn->real_escape_string($_POST['day_of_week']);
+    $start_time = $conn->real_escape_string($_POST['start_time']);
+    $end_time = $conn->real_escape_string($_POST['end_time']);
 
     // อัปเดตข้อมูลในฐานข้อมูล
-    $sql_update = "UPDATE class_schedule SET 
-                   course_name='$course_name',
-                   instructor_name='$instructor_name',
-                   room='$room',
-                   day_of_week='$day_of_week',
-                   start_time='$start_time',
-                   end_time='$end_time',
-                   faculty='$faculty',
-                   major='$major'
-                   WHERE schedule_id = '$schedule_id'";
+    $sql_update = "UPDATE class_schedule 
+                   SET course_id = '$course_id', 
+                       instructor_id = '$instructor_id', 
+                       room = '$room', 
+                       day_of_week = '$day_of_week', 
+                       start_time = '$start_time', 
+                       end_time = '$end_time' 
+                   WHERE schedule_id = $schedule_id";
 
     if ($conn->query($sql_update) === TRUE) {
-        echo "<p>Schedule updated successfully! <a href='class_schedule.php'>Back to Schedule</a></p>";
+        echo "<script>
+                alert('Schedule updated successfully!');
+                window.location.href = 'class_schedule.php';
+              </script>";
+        exit();
     } else {
         echo "Error updating record: " . $conn->error;
     }
@@ -127,68 +121,65 @@ button:hover {
 <body>
 
     <div class="container">
-        
-        <form method="POST">
-            <h1>Edit Schedule</h1>
-            <div class="mb-3">
-                <label for="course_name" class="form-label">Course Name</label>
-                <input type="text" class="form-control" id="course_name" name="course_name" value="<?php echo htmlspecialchars($row['course_name']); ?>" required>
-            </div>
+    <form method="POST">
+        <h1>Edit Schedule</h1>
 
-            <div class="mb-3">
-                <label for="instructor_name" class="form-label">Instructor Name</label>
-                <input type="text" class="form-control" id="instructor_name" name="instructor_name" value="<?php echo htmlspecialchars($row['instructor_name']); ?>" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="room" class="form-label">Room</label>
-                <input type="text" class="form-control" id="room" name="room" value="<?php echo htmlspecialchars($row['room']); ?>" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="day_of_week" class="form-label">Day of the Week</label>
-                <select class="form-control" id="day_of_week" name="day_of_week" required>
-                    <option value="Monday" <?php echo ($row['day_of_week'] == 'Monday' ? 'selected' : ''); ?>>Monday</option>
-                    <option value="Tuesday" <?php echo ($row['day_of_week'] == 'Tuesday' ? 'selected' : ''); ?>>Tuesday</option>
-                    <option value="Wednesday" <?php echo ($row['day_of_week'] == 'Wednesday' ? 'selected' : ''); ?>>Wednesday</option>
-                    <option value="Thursday" <?php echo ($row['day_of_week'] == 'Thursday' ? 'selected' : ''); ?>>Thursday</option>
-                    <option value="Friday" <?php echo ($row['day_of_week'] == 'Friday' ? 'selected' : ''); ?>>Friday</option>
-                    <option value="Saturday" <?php echo ($row['day_of_week'] == 'Saturday' ? 'selected' : ''); ?>>Saturday</option>
-                    <option value="Sunday" <?php echo ($row['day_of_week'] == 'Sunday' ? 'selected' : ''); ?>>Sunday</option>
-                </select>
-            </div>
-
-            <div class="mb-3">
-                <label for="start_time" class="form-label">Start Time</label>
-                <input type="time" class="form-control" id="start_time" name="start_time" value="<?php echo htmlspecialchars($row['start_time']); ?>" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="end_time" class="form-label">End Time</label>
-                <input type="time" class="form-control" id="end_time" name="end_time" value="<?php echo htmlspecialchars($row['end_time']); ?>" required>
-            </div>
-
-            <label>Faculty:</label><br>
-        <select name="faculty" required>
-            <option value="Faculty of Technology-Business">Faculty of Technology-Business</option>
-            <option value="Faculty of Foreign Languages-Tourism">Faculty of Foreign Languages-Tourism</option>
-        </select><br><br>
-
-        <label>Major:</label><br>
-        <select name="major" required>
-            <option value="Information Technology">Information Technology</option>
-            <option value="Automotive Engineering Technology">Automotive Engineering Technology</option>
-            <option value="Business Administration-Marketing">Business Administration-Marketing</option>
-
-            <option value="Travel and Tourism Service Management">Travel and Tourism Service Management</option>
-            <option value="English language">English language</option>
-            <option value="Chinese language">Chinese language</option>
-
+        <!-- ฟอร์มสำหรับเลือกชื่อวิชา -->
+        <label for="course_name">Course Name</label>
+        <select id="course_name" name="course_name" required>
+            <option value="">Select Course</option>
+            <?php
+            $sql_courses = "SELECT course_id, course_name FROM courses";
+            $result_courses = $conn->query($sql_courses);
+            if ($result_courses->num_rows > 0) {
+                while ($row = $result_courses->fetch_assoc()) {
+                    $selected = ($row['course_id'] == $schedule['course_id']) ? "selected" : "";
+                    echo "<option value='" . $row['course_id'] . "' $selected>" . htmlspecialchars($row['course_name']) . "</option>";
+                }
+            }
+            ?>
         </select>
 
-            <button type="submit" name="submit" class="btn btn-primary">Update Schedule</button>
-        </form>
-    </div>
+        <!-- ฟอร์มสำหรับเลือกชื่ออาจารย์ -->
+        <label for="instructor_name">Instructor Name</label>
+        <select id="instructor_name" name="instructor_name" required>
+            <option value="">Select Instructor</option>
+            <?php
+            $sql_instructors = "SELECT instructor_id, instructor_name FROM instructors";
+            $result_instructors = $conn->query($sql_instructors);
+            if ($result_instructors->num_rows > 0) {
+                while ($row = $result_instructors->fetch_assoc()) {
+                    $selected = ($row['instructor_id'] == $schedule['instructor_id']) ? "selected" : "";
+                    echo "<option value='" . $row['instructor_id'] . "' $selected>" . htmlspecialchars($row['instructor_name']) . "</option>";
+                }
+            }
+            ?>
+        </select>
 
+        <!-- ฟิลด์ห้องเรียน -->
+        <label for="room">Room</label>
+        <input type="text" id="room" name="room" value="<?= htmlspecialchars($schedule['room']); ?>" required>
+
+        <!-- ฟอร์มเลือกวัน -->
+        <label for="day_of_week">Day of the Week</label>
+        <select id="day_of_week" name="day_of_week" required>
+            <?php
+            $days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+            foreach ($days as $day) {
+                $selected = ($day == $schedule['day_of_week']) ? "selected" : "";
+                echo "<option value='$day' $selected>$day</option>";
+            }
+            ?>
+        </select>
+
+        <!-- เวลาเริ่มต้นและสิ้นสุด -->
+        <label for="start_time">Start Time</label>
+        <input type="time" id="start_time" name="start_time" value="<?= htmlspecialchars($schedule['start_time']); ?>" required>
+        
+        <label for="end_time">End Time</label>
+        <input type="time" id="end_time" name="end_time" value="<?= htmlspecialchars($schedule['end_time']); ?>" required>
+
+        <button type="submit" name="submit">Update Schedule</button>
+    </form>
 </body>
 </html>

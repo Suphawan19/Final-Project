@@ -24,9 +24,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $faculty = $_POST['faculty'];
     $major = $_POST['major'];
 
-    // SQL query to insert the data
-    $sql = "INSERT INTO students (first_name, last_name, email, phone_number, date_of_birth, gender, major, faculty) 
-            VALUES ('$first_name', '$last_name', '$email', '$phone_number', '$date_of_birth', '$gender', '$major', '$faculty')";
+    // Handle photo upload (optional)
+    $photo = null;
+    if (isset($_FILES['photo']) && $_FILES['photo']['error'] === 0) {
+        $photo = $_FILES['photo']['name'];
+        $photo_tmp = $_FILES['photo']['tmp_name'];
+        $photo_extension = pathinfo($photo, PATHINFO_EXTENSION);
+        $photo_new_name = uniqid('', true) . '.' . $photo_extension;
+        $photo_path = '../uploads/' . $photo_new_name;
+
+        // Move the uploaded file to the uploads directory
+        if (!move_uploaded_file($photo_tmp, $photo_path)) {
+            echo "Error uploading photo.";
+            exit();
+        }
+    } else {
+        // If no photo is uploaded, set a default photo or NULL
+        $photo_new_name = 'default.jpg'; // Path to default image
+    }
+
+    // SQL query to insert data into the database, including the photo (if uploaded)
+    $sql = "INSERT INTO students (first_name, last_name, email, phone_number, date_of_birth, gender, major, faculty, photo) 
+            VALUES ('$first_name', '$last_name', '$email', '$phone_number', '$date_of_birth', '$gender', '$major', '$faculty', '$photo_new_name')";
 
     if ($conn->query($sql) === TRUE) {
         header("Location: admin_student.php"); // Redirect to student list page
@@ -35,6 +54,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         echo "Error: " . $sql . "<br>" . $conn->error;
     }
 }
+
+$conn->close();
 ?>
 
 <!DOCTYPE html>
@@ -47,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </head>
 <body>
 
-<form method="POST">
+<form method="POST" enctype="multipart/form-data">
     <h1>Add New Student</h1>
     <label>First Name:</label><br>
     <input type="text" name="first_name" required><br><br>
@@ -118,8 +139,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <option value="Chinese language">Chinese language</option>
     </select><br><br>
 
+    <!-- Add Photo Upload -->
+    <label>Photo (Optional):</label><br>
+    <input type="file" name="photo"><br><br>
     <button type="submit">Add Student</button>
 </form>
+
 </body>
 </html>
 

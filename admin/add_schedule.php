@@ -1,28 +1,31 @@
 <?php include '../config.php'; ?>
+
 <?php
-    if (isset($_POST['submit'])) {
-        $course_id = $_POST['course_name'];
-        $instructor_id = $_POST['instructor_name'];
-        $room = $_POST['room'];
-        $day_of_week = $_POST['day_of_week'];
-        $start_time = $_POST['start_time'];
-        $end_time = $_POST['end_time'];
-        $faculty = $_POST['faculty'];
-        $major = $_POST['major'];
+if (isset($_POST['submit'])) {
+    // รับค่าจากฟอร์ม
+    $course_id = $conn->real_escape_string($_POST['course_name']);
+    $instructor_id = $conn->real_escape_string($_POST['instructor_name']);
+    $room = $conn->real_escape_string($_POST['room']);
+    $day_of_week = $conn->real_escape_string($_POST['day_of_week']);
+    $start_time = $conn->real_escape_string($_POST['start_time']);
+    $end_time = $conn->real_escape_string($_POST['end_time']);
 
-        // เพิ่มข้อมูลลงฐานข้อมูล
-        $sql = "INSERT INTO class_schedule (course_id, instructor_id, room, day_of_week, start_time, end_time, faculty, major) 
-                VALUES ('$course_id', '$instructor_id', '$room', '$day_of_week', '$start_time', '$end_time', '$faculty', '$major')";
+    // เพิ่มข้อมูลลงฐานข้อมูล
+    $sql = "INSERT INTO class_schedule (course_id, instructor_id, room, day_of_week, start_time, end_time) 
+            VALUES ('$course_id', '$instructor_id', '$room', '$day_of_week', '$start_time', '$end_time')";
 
-        if ($conn->query($sql) === TRUE) {
-            echo "Schedule added successfully!";
-            header("Location: class_schedule.php");
-            exit();
-        } else {
-            echo "Error: " . $sql . "<br>" . $conn->error;
-        }
+    if ($conn->query($sql) === TRUE) {
+        echo "<script>
+                alert('Schedule added successfully!');
+                window.location.href = 'class_schedule.php';
+              </script>";
+        exit();
+    } else {
+        echo "Error: " . $sql . "<br>" . $conn->error;
     }
-    ?>
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -44,7 +47,7 @@
             $result_courses = $conn->query($sql_courses);
             if ($result_courses->num_rows > 0) {
                 while ($row = $result_courses->fetch_assoc()) {
-                    echo "<option value='" . $row['course_id'] . "'>" . $row['course_name'] . "</option>";
+                    echo "<option value='" . $row['course_id'] . "'>" . htmlspecialchars($row['course_name']) . "</option>";
                 }
             }
             ?>
@@ -59,7 +62,7 @@
             $result_instructors = $conn->query($sql_instructors);
             if ($result_instructors->num_rows > 0) {
                 while ($row = $result_instructors->fetch_assoc()) {
-                    echo "<option value='" . $row['instructor_id'] . "'>" . $row['instructor_name'] . "</option>";
+                    echo "<option value='" . $row['instructor_id'] . "'>" . htmlspecialchars($row['instructor_name']) . "</option>";
                 }
             }
             ?>
@@ -72,6 +75,7 @@
         <!-- ฟอร์มเลือกวัน -->
         <label for="day_of_week">Day of the Week</label>
         <select id="day_of_week" name="day_of_week" required>
+            <option value="">Select Day</option>
             <option value="Monday">Monday</option>
             <option value="Tuesday">Tuesday</option>
             <option value="Wednesday">Wednesday</option>
@@ -81,26 +85,6 @@
             <option value="Sunday">Sunday</option>
         </select>
 
-        <!-- เลือกคณะ -->
-        <label for="faculty">Faculty</label>
-        <select id="faculty" name="faculty" required>
-            <option value="Faculty of Technology-Business">Faculty of Technology-Business</option>
-            <option value="Faculty of Foreign Languages-Tourism">Faculty of Foreign Languages-Tourism</option>
-        </select>
-
-        <!-- เลือกสาขา -->
-        <label>Major:</label><br>
-        <select name="major" required>
-            <option value="Information Technology">Information Technology</option>
-            <option value="Automotive Engineering Technology">Automotive Engineering Technology</option>
-            <option value="Business Administration-Marketing">Business Administration-Marketing</option>
-            ------------------------------------------------------------------------------------------------
-            <option value="Faculty of Foreign Languages-Tourism">Faculty of Foreign Languages-Tourism</option>
-            <option value="Travel and Tourism Service Management">Travel and Tourism Service Management</option>
-            <option value="English language">English language</option>
-            <option value="Chinese language">Chinese language</option>
-
-        </select>
         <!-- เวลาเริ่มต้นและสิ้นสุด -->
         <label for="start_time">Start Time</label>
         <input type="time" id="start_time" name="start_time" required>
@@ -110,7 +94,5 @@
 
         <button type="submit" name="submit">Add Schedule</button>
     </form>
-
-   
 </body>
 </html>

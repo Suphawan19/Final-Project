@@ -14,6 +14,30 @@ if ($student_id) {
     $stmt->close();
 }
 
+// Handle photo update
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['new_photo'])) {
+    $photo = $_FILES['new_photo']['name'];
+    $photo_tmp = $_FILES['new_photo']['tmp_name'];
+    $photo_extension = pathinfo($photo, PATHINFO_EXTENSION);
+    $photo_new_name = uniqid('', true) . '.' . $photo_extension;
+    $photo_path = '../uploads/' . $photo_new_name;
+
+    if (move_uploaded_file($photo_tmp, $photo_path)) {
+        // Update the photo in the database
+        $sql_update = "UPDATE students SET photo = ? WHERE student_id = ?";
+        $stmt_update = $conn->prepare($sql_update);
+        $stmt_update->bind_param("ss", $photo_new_name, $student_id);
+        $stmt_update->execute();
+        $stmt_update->close();
+        
+        // Redirect to the current page to show the updated photo
+        header("Location: student_detail.php?student_id=" . urlencode($student_id));
+        exit();
+    } else {
+        echo "Error uploading photo.";
+    }
+}
+
 $conn->close();
 ?>
 
@@ -60,16 +84,73 @@ $conn->close();
         }
 
         .profile img {
-            width: 160px;
-            height: 160px;
+            width: 260px;
+            height: 260px;
+            margin: 80px;
             object-fit: cover;
-            border-radius: 50%;
+            border-radius: 20%;
             border: 5px solid white;
             background-color: #f1f1f1;
         }
+/* Add to your existing CSS */
+
+form {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+form label {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+form input[type="file"] {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+form input[type="file"]:hover {
+    border-color:rgb(255, 4, 0);
+}
+
+form button {
+    padding: 12px 25px;
+    background-color:rgb(167, 44, 22);
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%;
+}
+
+form button:hover {
+    background-color:rgb(248, 2, 2);
+}
+
+form button:focus {
+    outline: none;
+}
+
+form .form-group {
+    margin-bottom: 15px;
+}
+
 
         .details {
-            margin-top: 20px;
+            margin-top: 10px;
             padding: 20px;
         }
 
@@ -131,6 +212,21 @@ $conn->close();
         <div class="header">
             <h2>Student Details</h2>
         </div>
+        <div class="profile">
+            <?php
+            // Display the student's photo or a default photo
+            $photo = !empty($student['photo']) ? $student['photo'] : 'default.jpg'; // Use default image if no photo is available
+            ?>
+            <img src="../uploads/<?= htmlspecialchars($photo); ?>" alt="Student Photo" width="150">
+        </div>
+
+        <!-- Form for updating the student's photo -->
+        <form method="POST" enctype="multipart/form-data">
+            <label for="new_photo">Update Photo:</label><br>
+            <input type="file" name="new_photo" id="new_photo" required><br><br>
+            <button type="submit" class="btn btn-warning">Update Photo</button>
+        </form>
+
         <div class="details">
             <table>
                 <tr><th>Student ID</th><td><?php echo htmlspecialchars($student['student_id']); ?></td></tr>

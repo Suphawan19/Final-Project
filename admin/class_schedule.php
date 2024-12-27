@@ -1,14 +1,23 @@
 <?php
 include '../config.php'; // เชื่อมต่อฐานข้อมูล
 
-$sql = "SELECT cs.schedule_id, cs.room, cs.day_of_week, cs.start_time, cs.end_time, 
-                c.course_name, i.instructor_name, cs.faculty, cs.major
+$sql = "SELECT 
+            cs.schedule_id, 
+            c.course_name, 
+            i.instructor_name, 
+            cs.room, 
+            cs.day_of_week, 
+            cs.start_time, 
+            cs.end_time
         FROM class_schedule cs
         LEFT JOIN courses c ON cs.course_id = c.course_id
-        LEFT JOIN instructors i ON cs.instructor_id = i.instructor_id
-        ORDER BY cs.day_of_week, cs.start_time";
+        LEFT JOIN instructors i ON cs.instructor_id = i.instructor_id";
 
 $result = $conn->query($sql);
+
+if (!$result) {
+    die("SQL Error: " . $conn->error);
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -22,10 +31,10 @@ $result = $conn->query($sql);
 <body>
     <div class="container py-4">
         <div class="table-container">
-        <h1>Class Schedule</h1>
-        <div class="btn-container">
-            <a href="add_schedule.php" class="btn btn-success btn-lg">Add New Schedule</a>
-        </div>
+            <h1>Class Schedule</h1>
+            <div class="btn-container mb-3">
+                <a href="add_schedule.php" class="btn btn-success btn-lg">Add New Schedule</a>
+            </div>
             <table class="table table-striped table-hover">
                 <thead class="table-warning">
                     <tr>
@@ -35,8 +44,6 @@ $result = $conn->query($sql);
                         <th>Day of the Week</th>
                         <th>Start Time</th>
                         <th>End Time</th>
-                        <th>Faculty</th>
-                        <th>Major</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -51,8 +58,6 @@ $result = $conn->query($sql);
                                     <td>" . htmlspecialchars($row['day_of_week']) . "</td>
                                     <td>" . htmlspecialchars($row['start_time']) . "</td>
                                     <td>" . htmlspecialchars($row['end_time']) . "</td>
-                                    <td>" . htmlspecialchars($row['faculty']) . "</td>
-                                    <td>" . htmlspecialchars($row['major']) . "</td>
                                     <td class='action-buttons text-center'>
                                         <a href='edit_schedule.php?schedule_id=" . $row['schedule_id'] . "' class='btn btn-warning btn-sm'>Edit</a>
                                         <a href='delete_schedule.php?schedule_id=" . $row['schedule_id'] . "' class='btn btn-danger btn-sm' onclick='return confirm(\"Are you sure you want to delete this schedule?\")'>Delete</a>
@@ -60,7 +65,7 @@ $result = $conn->query($sql);
                                   </tr>";
                         }
                     } else {
-                        echo "<tr><td colspan='9' class='text-center text-muted'>No schedules available</td></tr>";
+                        echo "<tr><td colspan='7' class='text-center text-muted'>No schedules available</td></tr>";
                     }
                     ?>
                 </tbody>

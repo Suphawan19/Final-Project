@@ -22,13 +22,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $first_name = $_POST['first_name'];
     $last_name = $_POST['last_name'];
     $email = $_POST['email'];
-    $age = $_POST['age'];
     $role = $_POST['role'];
+    $new_password = $_POST['password'] ?? null; // Password field for admin update
+    $age = $_POST['age'] ?? null; // Age field (can be null for admin and staff)
+    
+    // If password is provided, hash it
+    if ($new_password) {
+        $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
+    }
 
-    // อัปเดตข้อมูลในฐานข้อมูล
-    $sql = "UPDATE users SET first_name = ?, last_name = ?, email = ?, age = ?, role = ? WHERE user_id = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssssss", $first_name, $last_name, $email, $age, $role, $user_id);
+    // If updating admin password, modify the SQL query
+    if ($role === 'admin' && $new_password) {
+        // Update query with password change
+        $sql = "UPDATE users SET first_name = ?, last_name = ?, email = ?, role = ?, password = ? WHERE user_id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("ssssss", $first_name, $last_name, $email, $role, $hashed_password, $user_id);
+    } else {
+        // Update query with or without password change (for student, staff, etc.)
+        if ($role === 'student' && $age) {
+            $sql = "UPDATE users SET first_name = ?, last_name = ?, email = ?, age = ?, role = ? WHERE user_id = ?";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("ssssss", $first_name, $last_name, $email, $age, $role, $user_id);
+        } else {
+            $sql = "UPDATE users SET first_name = ?, last_name = ?, email = ?, role = ? WHERE user_id = ?";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("sssss", $first_name, $last_name, $email, $role, $user_id);
+        }
+    }
 
     if ($stmt->execute()) {
         $message = "User updated successfully!";
@@ -106,8 +126,7 @@ $stmt->close();
         }
 
         .btn-primary:hover {
-          
-    background: linear-gradient(90deg, #e52e71, #221e1b);
+            background: linear-gradient(90deg, #e52e71, #221e1b);
         }
 
         .alert {
@@ -140,17 +159,27 @@ $stmt->close();
                         <label for="email" class="form-label">Email:</label>
                         <input type="email" name="email" id="email" class="form-control" value="<?= $user['email'] ?>" required>
                     </div>
-                    <div class="mb-3">
-                        <label for="age" class="form-label">Age:</label>
-                        <input type="number" name="age" id="age" class="form-control" value="<?= $user['age'] ?>" required>
-                    </div>
+                    <?php if ($user['role'] === 'student'): ?>
+                        <div class="mb-3">
+                            <label for="age" class="form-label">Age:</label>
+                            <input type="number" name="age" id="age" class="form-control" value="<?= $user['age'] ?>" required>
+                        </div>
+                    <?php endif; ?>
                     <div class="mb-3">
                         <label for="role" class="form-label">Role:</label>
                         <select name="role" id="role" class="form-select" required>
                             <option value="student" <?= $user['role'] == 'student' ? 'selected' : '' ?>>Student</option>
                             <option value="staff" <?= $user['role'] == 'staff' ? 'selected' : '' ?>>Staff</option>
+                            <option value="admin" <?= $user['role'] == 'admin' ? 'selected' : '' ?>>Admin</option>
                         </select>
                     </div>
+                    <!-- Password Field for Admin -->
+                    <?php if ($user['role'] === 'admin'): ?>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">New Password :</label>
+                            <input type="password" name="password" id="password" class="form-control">
+                        </div>
+                    <?php endif; ?>
                     <button type="submit" class="btn btn-primary w-100">Update User</button>
                 </form>
             </div>

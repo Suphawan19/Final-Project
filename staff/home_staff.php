@@ -42,6 +42,7 @@ include('../config.php');
                                 <i class="fas fa-info-circle"></i> About Us
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item"href="../staff/staff_infomation.php"><i class="fas fa-user-graduate"></i> Staff Information</a></li>
                                 <li><a class="dropdown-item" href="../admin/class_schedule.php"><i class="fas fa-calendar-alt"></i> Class Schedule</a></li>
                                 <li><a class="dropdown-item" href="../admin/exam_schedule.php"><i class="fas fa-calendar-alt"></i> Examination Schedule</a></li>
                                 <li><a class="dropdown-item" href="../admin/career_guidance.php"><i class="fas fa-chalkboard-teacher"></i> Career Guidance Training</a></li>

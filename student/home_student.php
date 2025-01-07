@@ -35,7 +35,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['like_post_id'])) {
     <title>Home - Student</title>
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- ลิงก์ไปยังไฟล์ CSS -->
     <link rel="stylesheet" href="../style.css/style_home_student.css">
 
@@ -51,14 +51,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['like_post_id'])) {
         <ul>
             <li><a href="home_student.php"><i class="fas fa-calendar-alt"></i> Home</a></li>
             <li><a href="../student/Posts.php"><i class="fas fa-users-cog"></i> Post</a></li>
-            <li><a href="../student/notifications_student.php"><i class="fas fa-bell"></i> Notifications</a></li>
+            <li><a href="../student/notification_student.php"><i class="fas fa-bell"></i> Notifications</a></li>
             <li class="menu-item dropdown">
                 <a href="#" id="dropdown-toggle" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-info-circle"></i> About Us</a>
                 <ul class="dropdown-menu">
                     <li><a href="../student/student_information.php"><i class="fas fa-user-graduate"></i> Student Information</a></li>
                     <li><a href="../student/student_schedule.php"><i class="fas fa-calendar-alt"></i> Class Schedule</a></li>
                     <li><a href="../student/student_exam_schedule.php"><i class="fas fa-calendar-alt"></i> Examination Schedule</a></li>
-                    <li><a href="../student/student_career guidance.php"><i class="fas fa-chalkboard-teacher"></i> Career guidance training</a></li>
                 </ul>
             </li>
             <!-- ลิงก์สำหรับเปลี่ยนรหัสผ่าน -->
@@ -72,13 +71,90 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['like_post_id'])) {
     <div class="main-content" id="mainContent">
         <div class="header">Welcome to Students!</div>
     </div>
-    <!-- Hero Banner -->
-    <section class="hero-banner">
+     <!-- Hero Banner -->
+     <section class="hero-banner bg-primary text-white text-center py-5">
         <h1>📢 Important Events Notification</h1>
         <p class="lead">Keep track of all important events in one place!</p>
-        <a href="../student/notifications_student.php" class="btn btn-warning btn-lg">View Events</a>
+        <a href="#event-overview" class="btn btn-light btn-lg"> View Events</a>
     </section>
+    <main class="container mt-4">
+    <section id="event-overview" class="event-section">
+        <div class="row g-4">
+            <?php
+            // กรองเหตุการณ์ที่มี role เป็น student
+            $sql_events = "SELECT * FROM events WHERE role = 'student' ORDER BY set_event_date DESC";
+            $result_events = $conn->query($sql_events);
 
+            if ($result_events->num_rows > 0) {
+                while ($row = $result_events->fetch_assoc()) {
+                    $id = $row['id'];
+                    $title = htmlspecialchars($row['title']);
+                    $event_type = htmlspecialchars($row['event_type']);
+                    $set_event_date = htmlspecialchars($row['set_event_date']);
+                    $end_date = htmlspecialchars($row['end_date']);
+                    $event_time = htmlspecialchars($row['event_time']);
+                    $end_time = htmlspecialchars($row['end_time']);
+                    $description = htmlspecialchars($row['description']);  // Get the description
+
+                    echo "
+                    <div class='col-lg-4 col-md-6 col-sm-12'>
+                        <div class='card event-card'>
+                            <div class='card-body'>
+                                <h5 class='card-title'>$title</h5>
+                                <p class='card-text'><strong>Type:</strong> $event_type</p>
+                                <p class='card-text'><strong>Start:</strong> $set_event_date</p>
+                                <p class='card-text'><strong>Description:</strong> $description</p> <!-- Display description -->
+                                <button class='btn btn-details' onclick='showEventDetails(\"$title\", \"$event_type\", \"$set_event_date\", \"$end_date\", \"$event_time\", \"$end_time\", \"$description\")'>
+                                    View Details
+                                </button>
+                            </div>
+                        </div>
+                    </div>";
+                }
+            } else {
+                echo "<p class='text-center'>🎉 No events available at the moment!</p>";
+            }
+            ?>
+        </div>
+    </section>
+</main>
+
+<!-- Event Details Modal -->
+<div class="modal fade" id="eventDetailsModal" tabindex="-1" aria-labelledby="eventDetailsLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="event-title">Event Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Type:</strong> <span id="event-type"></span></p>
+                <p><strong>Description:</strong> <span id="event-description"></span></p> 
+                <p><strong>Start Date:</strong> <span id="event-Set_event_date"></span></p>
+                <p><strong>End Date:</strong> <span id="event-end"></span></p>
+                <p><strong>Start Time:</strong> <span id="event-time"></span></p>
+                <p><strong>End Time:</strong> <span id="event-end_time"></span></p>
+            </div>
+        </div>
+    </div>
+</div>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function showEventDetails(title, eventType, startDate, endDate, startTime, endTime, description) {
+    document.getElementById('event-title').innerText = title;
+    document.getElementById('event-type').innerText = eventType;
+    document.getElementById('event-Set_event_date').innerText = startDate;
+    document.getElementById('event-end').innerText = endDate;
+    document.getElementById('event-time').innerText = startTime;
+    document.getElementById('event-end_time').innerText = endTime;
+    document.getElementById('event-description').innerText = description;
+
+    var eventDetailsModal = new bootstrap.Modal(document.getElementById('eventDetailsModal'));
+    eventDetailsModal.show();
+}
+
+    </script>
     <div class="container">
         <h1 class="my-4 text-center">Student Posts</h1>
 
@@ -252,17 +328,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['like_post_id'])) {
 
 
     <!-- Footer Section -->
-    <footer class="footer">
+<footer class="footer">
+<!-- Footer Content -->
+<div class="footer-container">
+    <!-- Left Section -->
+    <div class="footer-section about">
+        <img src="../images/logo pxu.jpeg" alt="Logo">
 
-        <!-- Footer Content -->
-        <div class="footer-container">
-            <!-- Left Section -->
-            <div class="footer-section about">
-                <img src="../images/logo pxu.jpeg" alt="Logo">
+        <p>Phú Xuân University, located in Hue,<br>
+             Vietnam, is one of the most renowned higher education institutions in central <br>
+             Vietnam. It was established to provide quality education and promote research relevant to the development of local and national communities.</p>
 
-                <p>Phú Xuân University, located in Hue, Vietnam, is one of the most renowned higher education institutions in central Vietnam. It was established to provide quality education and promote research relevant to the development of local and national communities.</p>
-
-            </div>
+    </div>
 
             <!-- Quick Links -->
             <div class="footer-section links">
@@ -279,28 +356,45 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['like_post_id'])) {
             <div class="footer-section links">
                 <h4>Useful Links</h4>
                 <ul>
-                    <li><a href="../student/notifications_student.php">notifications</a></li>
-                    <li><a href="../student/student_career guidance.php">career guidance training</a></li>
+                    <li><a href="../student/notification_student.php">notifications</a></li>
                     <li><a href="../student/home_student.php">post home student</a></li>
 
                 </ul>
             </div>
 
-            <!-- School Hours -->
-            <div class="footer-section hours">
-                <h4>School Hours</h4>
-                <p>7:00 AM - 5:30 PM , - Monday</p>
-                <p>Phu Xuan University,<br>
-                    Phu Xuan University - 176 Tran Phu,Tp.Huế, Thừa Thiên Huế,<br>
-                    49000, Vietnam</p>
-            </div>
+             <!-- School Hours -->
+        <div class="footer-section hours">
+            <h4>School Hours</h4>
+            <p>8:00 AM - 4:30 PM, Thursday - Monday</p>
+            <address>
+            Phu Xuan University,<br>
+            Phu Xuan University - 176 Tran Phu,Tp.Huế, Thừa Thiên Huế,<br>
+            49000, Vietnam,<br>
+            </address>
         </div>
 
-        <!-- Footer Bottom -->
-        <div class="footer-bottom">
-            <p>Copyright © 2024 Phu Xuan University. All rights reserved.</p>
-        </div>
-    </footer>
+        <!-- Social Media -->
+<div class="footer-section social-media">
+    <div class="social-icons">
+        <a href="https://www.facebook.com/phuxuan.edu.vn?locale=th_TH" target="_blank" class="social-icon" title="Facebook" style="color:rgb(255, 255, 255); background-color:rgb(27, 99, 255); /* สีพื้นหลัง Facebook (สามารถเปลี่ยนได้) */">
+            <i class="fab fa-facebook-f"></i>
+        </a>
+        <a href="https://phuxuan.edu.vn/" target="_blank" class="social-icon" title="Website" style="color: #4caf50;  background-color:rgb(248, 248, 248); /* สีพื้นหลัง Facebook (สามารถเปลี่ยนได้) */">
+            <i class="fas fa-globe"></i> <!-- ไอคอน Globe -->
+        </a>
+        <!-- เพิ่มไอคอนที่อยู่ -->
+        <a href="https://www.google.com/maps?q=Phu+Xuan+University" target="_blank" class="social-icon" title="Address" style="color: rgb(255, 255, 255); background-color: rgb(255, 0, 0);">
+            <i class="fas fa-map-marker-alt"></i> <!-- ไอคอนที่อยู่ -->
+        </a>
+    </div>
+</div>
+    </div>
+
+    <!-- Footer Bottom -->
+    <div class="footer-bottom">
+        <p>&copy; 2024 Phu Xuan University. All rights reserved.</p>
+    </div>
+</footer>
+
 </body>
-
 </html>

@@ -19,7 +19,7 @@ include('../config.php');
 <body>
     <!-- ส่วนหัว -->
     <header>
-        <h1 class="text-center text-yellow py-3">Welcome to the Staff System</h1>
+        <h1 class="text-center text-yellow py-3">Welcome to the Staff System!</h1>
         <nav class="navbar navbar-expand-lg custom-shadow-bg">
             <div class="container-fluid">
             <a class="navbar-brand text-yellow" href="#"><i class="fas fa-home"></i> Home</a>
@@ -45,7 +45,6 @@ include('../config.php');
                                 <li><a class="dropdown-item"href="../staff/staff_infomation.php"><i class="fas fa-user-graduate"></i> Staff Information</a></li>
                                 <li><a class="dropdown-item" href="../admin/class_schedule.php"><i class="fas fa-calendar-alt"></i> Class Schedule</a></li>
                                 <li><a class="dropdown-item" href="../admin/exam_schedule.php"><i class="fas fa-calendar-alt"></i> Examination Schedule</a></li>
-                                <li><a class="dropdown-item" href="../admin/career_guidance.php"><i class="fas fa-chalkboard-teacher"></i> Career Guidance Training</a></li>
                             </ul>
                         </li>
                         <li class="nav-item">
@@ -61,35 +60,37 @@ include('../config.php');
     <section class="hero-banner bg-primary text-white text-center py-5">
         <h1>📢 Important Events Notification</h1>
         <p class="lead">Keep track of all important events in one place!</p>
-        <a href="#event-overview" class="btn btn-light btn-lg"><i class="fas fa-calendar-alt"></i> View Events</a>
+        <a href="#event-overview" class="btn btn-light btn-lg"> View Events</a>
     </section>
 
     <!-- Event Section -->
-    <main class="container mt-5">
+    <main class="container mt-4">
         <section id="event-overview" class="event-section">
             <div class="row g-4">
                 <?php
-                $sql_events = "SELECT * FROM events ORDER BY Set_event_date DESC";
+                $sql_events = "SELECT * FROM events WHERE role = 'staff' ORDER BY set_event_date DESC";
                 $result_events = $conn->query($sql_events);
                 if ($result_events->num_rows > 0) {
                     while ($row = $result_events->fetch_assoc()) {
                         $id = $row['id'];
                         $title = htmlspecialchars($row['title']);
                         $event_type = htmlspecialchars($row['event_type']);
-                        $Set_event_date = htmlspecialchars($row['Set_event_date']);
+                        $set_event_date = htmlspecialchars($row['set_event_date']);
                         $end_date = htmlspecialchars($row['end_date']);
                         $event_time = htmlspecialchars($row['event_time']);
                         $end_time = htmlspecialchars($row['end_time']);
+                        $description = htmlspecialchars($row['description']);  // Get the description
 
                         echo "
                         <div class='col-lg-4 col-md-6 col-sm-12'>
-                            <div class='card event-card shadow-lg'>
+                            <div class='card event-card'>
                                 <div class='card-body'>
                                     <h5 class='card-title'>$title</h5>
                                     <p class='card-text'><strong>Type:</strong> $event_type</p>
-                                    <p class='card-text'><strong>Start:</strong> $Set_event_date</p>
-                                    <button class='btn btn-primary' onclick='showEventDetails(\"$title\", \"$event_type\", \"$Set_event_date\", \"$end_date\", \"$event_time\", \"$end_time\")'>
-                                         <i class='fas fa-info-circle'></i> View Details
+                                    <p class='card-text'><strong>Start:</strong> $set_event_date</p>
+                                    <p class='card-text'><strong>Description:</strong> $description</p> <!-- Display description -->
+                                    <button class='btn btn-details' onclick='showEventDetails(\"$title\", \"$event_type\", \"$set_event_date\", \"$end_date\", \"$event_time\", \"$end_time\", \"$description\")'>
+                                        View Details
                                     </button>
                                 </div>
                             </div>
@@ -113,6 +114,7 @@ include('../config.php');
                 </div>
                 <div class="modal-body">
                     <p><strong>Type:</strong> <span id="event-type"></span></p>
+                    <p><strong>Description:</strong> <span id="event-description"></span></p> 
                     <p><strong>Start Date:</strong> <span id="event-Set_event_date"></span></p>
                     <p><strong>End Date:</strong> <span id="event-end"></span></p>
                     <p><strong>Start Time:</strong> <span id="event-time"></span></p>
@@ -216,57 +218,64 @@ include('../config.php');
 
     
 
-    <!-- Footer Section -->
-    <footer class="footer">
-
+<!-- Footer Section -->
+<footer class="footer">
 <!-- Footer Content -->
 <div class="footer-container">
     <!-- Left Section -->
     <div class="footer-section about">
         <img src="../images/logo pxu.jpeg" alt="Logo">
-        
-        <p>Phú Xuân University, located in Hue, Vietnam, is one of the most renowned higher education institutions in central Vietnam. It was established to provide quality education and promote research relevant to the development of local and national communities.</p>
-        
+
+        <p>Phú Xuân University, located in Hue,<br>
+             Vietnam, is one of the most renowned higher education institutions in central <br>
+             Vietnam. It was established to provide quality education and promote research relevant to the development of local and national communities.</p>
+
     </div>
 
-    <!-- Quick Links -->
-    <div class="footer-section links">
-        <h4>Quick Links</h4>
-        <ul>
-            <li><a href="../admin/admin_student.php">student infomation</a></li>
-            <li><a href="../student/student_schedule.php">schedule infomation</a></li>
-            <li><a href="../student/student_exam_schedule.php">exam infomation schedule</a></li>
-        </ul>
-    </div>
+        <!-- Quick Links -->
+        <div class="footer-section links">
+            <h4>Quick Links</h4>
+            <ul>
+                <li><a href="../admin/admin_student.php">Student Information</a></li>
+                <li><a href="../admin/class_schedule.php">Class Schedule</a></li>
+                <li><a href="../admin/exam_schedule.php">Exam Schedule</a></li>
+                <li><a href="../admin/user_management.php">User Management</a></li>
+            </ul>
+        </div>
 
-    <!-- Useful Links -->
-    <div class="footer-section links">
-        <h4>Useful Links</h4>
-        <ul>
-            <li><a href="../student/notifications_student.php">notifications</a></li>
-            <li><a href="../student/student_career guidance.php">career guidance training</a></li>
-            <li><a href="../student/home_student.php">post home student</a></li>
-            
-        </ul>
-    </div>
+        <!-- School Hours -->
+        <div class="footer-section hours">
+            <h4>School Hours</h4>
+            <p>8:00 AM - 4:30 PM, Thursday - Monday</p>
+            <address>
+            Phu Xuan University,<br>
+            Phu Xuan University - 176 Tran Phu,Tp.Huế, Thừa Thiên Huế,<br>
+            49000, Vietnam,<br>
+            </address>
+        </div>
 
-    <!-- School Hours -->
-    <div class="footer-section hours">
-        <h4>School Hours</h4>
-        <p>7:00 AM - 5:30 PM ,  - Monday</p>
-        <p>Phu Xuan University,<br>
-        Phu Xuan University - 176 Tran Phu,Tp.Huế, Thừa Thiên Huế,<br>
-        49000, Vietnam</p>
+           <!-- Social Media -->
+<div class="footer-section social-media">
+    <div class="social-icons">
+        <a href="https://www.facebook.com/phuxuan.edu.vn?locale=th_TH" target="_blank" class="social-icon" title="Facebook" style="color:rgb(255, 255, 255); background-color:rgb(27, 99, 255); /* สีพื้นหลัง Facebook (สามารถเปลี่ยนได้) */">
+            <i class="fab fa-facebook-f"></i>
+        </a>
+        <a href="https://phuxuan.edu.vn/" target="_blank" class="social-icon" title="Website" style="color: #4caf50;  background-color:rgb(248, 248, 248); /* สีพื้นหลัง Facebook (สามารถเปลี่ยนได้) */">
+            <i class="fas fa-globe"></i> <!-- ไอคอน Globe -->
+        </a>
+        <!-- เพิ่มไอคอนที่อยู่ -->
+        <a href="https://www.google.com/maps?q=Phu+Xuan+University" target="_blank" class="social-icon" title="Address" style="color: rgb(255, 255, 255); background-color: rgb(255, 0, 0);">
+            <i class="fas fa-map-marker-alt"></i> <!-- ไอคอนที่อยู่ -->
+        </a>
     </div>
 </div>
+    </div>
 
-<!-- Footer Bottom -->
-<div class="footer-bottom">
-    <p>Copyright © 2024 Phu Xuan University. All rights reserved.</p>
-</div>
+    <!-- Footer Bottom -->
+    <div class="footer-bottom">
+        <p>&copy; 2024 Phu Xuan University. All rights reserved.</p>
+    </div>
 </footer>
-</body>
 
-</html>
 </body>
 </html>

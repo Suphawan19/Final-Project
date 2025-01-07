@@ -1,6 +1,6 @@
 /* ปรับแต่ง body */
 body {
-    background-image: url('../images/dai-hoc-phu-xuan-2023-mau-do.jpeg');
+    background-image: url(../images/dai-hoc-phu-xuan-2023-mau-do.jpeg);
     background-size: cover;
     background-repeat: no-repeat;
     font-family: 'Poppins', sans-serif;

@@ -23,6 +23,7 @@ if (isset($_GET['search']) && !empty($_GET['search'])) {
 // Query ดึงข้อมูลเหตุการณ์จากฐานข้อมูล
 $sql_events = "SELECT * FROM events $role_filter $search_query ORDER BY set_event_date DESC";
 $result_events = $conn->query($sql_events);
+$current_date = date('Y-m-d'); // วันที่ปัจจุบันในรูปแบบ Y-m-d
 ?>
 
 <!DOCTYPE html>
@@ -112,8 +113,6 @@ $result_events = $conn->query($sql_events);
                         <th>End Date</th>
                         <th>Time</th>
                         <th>Role</th>
-                        <th>Faculty</th>
-                        <th>Major</th>
                         <th>Type</th>
                         <th>Status</th>
                         <th>Actions</th>
@@ -121,8 +120,6 @@ $result_events = $conn->query($sql_events);
                 </thead>
                 <tbody>
                     <?php
-                    $current_date = date('Y-m-d'); // วันที่ปัจจุบันในรูปแบบ Y-m-d
-
                     if ($result_events->num_rows > 0):
                         while ($event = $result_events->fetch_assoc()):
                             $status = $event['status'];
@@ -145,8 +142,6 @@ $result_events = $conn->query($sql_events);
                                 <td><?= htmlspecialchars($event['end_date']) ?></td>
                                 <td><?= htmlspecialchars($event['event_time']) ?> - <?= htmlspecialchars($event['end_time']) ?></td>
                                 <td><?= htmlspecialchars($event['role']) ?></td>
-                                <td><?= htmlspecialchars($event['faculty']) ?></td>
-                                <td><?= htmlspecialchars($event['major']) ?></td>
                                 <td><?= htmlspecialchars($event['event_type']) ?></td>
                                 <td>
                                     <?php if ($status === 'pending'): ?>
@@ -159,15 +154,13 @@ $result_events = $conn->query($sql_events);
                                 </td>
                                 <td>
                                     <div class="d-flex">
-                                        <a href="../admin/edit_event.php?id=<?= $event['id'] ?>" class="btn btn-sm btn-primary">
+                                        <a href="../admin/edit_event.php?id=<?= $event['id'] ?>" class="btn btn-sm btn-warning">
                                             <i class="fas fa-edit"></i> Edit
                                         </a>
                                         <a href="../admin/delete_event.php?id=<?= $event['id'] ?>" class="btn btn-sm btn-danger ms-2">
                                             <i class="fas fa-trash-alt"></i> Delete
                                         </a>
-                                        <a href="../admin/send_notification.php?id=<?= $event['id'] ?>&status=<?= $status ?>" class="btn btn-sm btn-info ms-2">
-                                            <i class="fas fa-paper-plane"></i> Notify
-                                        </a>
+                
                                     </div>
                                 </td>
                             </tr>
